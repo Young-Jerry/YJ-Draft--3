@@ -1,29 +1,27 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Nepali Bazar — Profile</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <header>
-    <h1>Your Profile</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="products.html">Products</a>
-      <a href="sell.html">Sell</a>
-      <a href="profile.html">Profile</a>
-    </nav>
-  </header>
+// profile.js — user profile page logic
+"use strict";
 
-  <section>
-    <h2>Your Listings</h2>
-    <div id="profile-grid" class="grid"></div>
-  </section>
+function initProfile() {
+  console.log("Profile page loaded ✅");
 
-  <div id="product-modal" class="hidden" aria-hidden="true"></div>
+  const profileName = document.getElementById("profile-name");
+  const postedGrid = document.getElementById("posted-products");
 
-  <script src="js/app.js"></script>
-</body>
-</html>
+  // Get current user (placeholder: demo1 for now)
+  const currentUser = localStorage.getItem("nb_current_user") || "demo1";
+  if (profileName) profileName.textContent = currentUser;
 
+  // Load all products from storage
+  const allProducts = getProducts();
+
+  // Filter only products by this user
+  const userProducts = allProducts.filter(p => p.owner === currentUser);
+
+  if (postedGrid) {
+    if (userProducts.length > 0) {
+      renderGrid(postedGrid, userProducts);
+    } else {
+      postedGrid.innerHTML = `<p class="muted">You haven’t posted anything yet.</p>`;
+    }
+  }
+}
