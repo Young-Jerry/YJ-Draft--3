@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sell — Nepali Bazar</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    /* Layout */
+    .sell-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .form-wrapper, .preview-panel {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,255,200,0.15);
+    }
+    .form-wrapper h2, .preview-panel h2 {
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 1rem;
+    }
+
+    /* Preview card */
+    .preview-card {
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 100%;
+      background: #1a1a1a;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,255,200,0.1);
+    }
+    .preview-card p {
+      margin: 0.4rem 0;
+    }
+
+    .preview-images {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .preview-images img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 2px solid var(--primary);
+    }
+
+    /* Dropdown dark theme */
+    select.input-glow, option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    select.input-glow option:hover {
+      background: #00ffcc;
+      color: #000;
+    }
+
+    /* Modal */
+    .nb-modal .nb-modal-content {
+      background: #111;
+      border-radius: 12px;
+      padding: 2rem;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(0,255,200,0.25);
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="dark-bg">
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <div class="logo">NB</div>
+        <div class="brand-text">
+          <div class="brand-title"><span class="site-name">Nepali Bazar</span></div>
+          <div class="brand-sub">Buy · Sell · Connect</div>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="sell.html" class="nav-link cta active">Sell</a>
+        <a href="login.html" id="login-link" class="nav-link">Login</a>
+        <div id="user-dropdown" class="dropdown" style="display:none;">
+          <button class="dropbtn">
+            <span id="username-display">User</span> <span class="caret">⌄</span>
+          </button>
+          <div class="dropdown-content">
+            <a href="profile.html">Profile</a>
+            <a href="#" id="logout-btn">Logout</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container">
+    <div class="sell-layout">
+
+      <!-- Form -->
+      <div class="form-wrapper">
+        <h2>Create a Listing</h2>
+        <p class="muted">Fill in the details carefully. Listings expire after 7 days.</p>
+
+        <form id="sell-form">
+          <label>Title</label>
+          <input type="text" id="sell-title" required class="input-glow" />
+
+          <label>Description</label>
+          <textarea id="sell-desc" rows="4" required class="input-glow"></textarea>
+
+          <label>Price (NPR)</label>
+          <input type="number" id="sell-price" min="1" required class="input-glow" />
+
+          <label>Category</label>
+          <select id="sell-category" class="input-glow">
+            <option>Electronics</option>
+            <option>Vehicles</option>
+            <option>Real Estate</option>
+            <option>Fashion</option>
+            <option>Services</option>
+            <option>Other</option>
+          </select>
+
+          <label>Province</label>
+          <select id="sell-province" class="input-glow" required>
+            <option value="">-- Select Province --</option>
+            <option value="1">Province 1</option>
+            <option value="2">Madhesh Province</option>
+            <option value="3">Bagmati Province</option>
+            <option value="4">Gandaki Province</option>
+            <option value="5">Lumbini Province</option>
+            <option value="6">Karnali Province</option>
+            <option value="7">Sudurpashchim Province</option>
+          </select>
+
+          <label>City</label>
+          <select id="sell-city" class="input-glow" required></select>
+
+          <label>Images (max 3)</label>
+          <input type="file" id="sell-images" accept="image/*" multiple class="input-glow" />
+
+          <button type="submit" class="btn btn-primary neon-btn" style="margin-top:1rem;">Publish Listing</button>
+        </form>
+      </div>
+
+      <!-- Live Preview -->
+      <div class="preview-panel">
+        <h2>Live Preview</h2>
+        <div class="preview-card">
+          <h3 id="preview-title">Your Title</h3>
+          <p id="preview-by" class="muted">By: You</p>
+          <p id="preview-address">Address: -</p>
+          <p id="preview-price" class="muted">NPR 0</p>
+          <p id="preview-desc">Your description will appear here.</p>
+          <div class="preview-images" id="preview-images"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Success Modal -->
+  <div id="sell-success" class="nb-modal" style="display:none;">
+    <div class="nb-modal-content">
+      <h2>Listing Published 🎉</h2>
+      <p>Your item has been successfully listed on Nepali Bazar. It will expire in 7 days.</p>
+      <div style="margin-top:15px;">
+        <a href="products.html" class="btn btn-primary neon-btn">Go to Shop</a>
+        <a href="profile.html" class="btn btn-ghost">View My Listings</a>
+        <button class="btn btn-ghost close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> <span class="site-name">Nepali Bazar</span></div>
+      <div class="muted">Contact: <a href="mailto:help@nepalibazar.test">help@nepalibazar.test</a></div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const user = localStorage.getItem("nb_logged_in_user");
+      const loginLink = document.getElementById("login-link");
+      const userDropdown = document.getElementById("user-dropdown");
+      if(user){
+        loginLink.style.display = "none";
+        userDropdown.style.display = "inline-block";
+        document.getElementById("username-display").textContent = user;
+        document.getElementById("preview-by").textContent = "By: " + user;
+        document.getElementById("logout-btn").addEventListener("click", e => {
+          e.preventDefault();
+          if(confirm("Logout?")){
+            localStorage.removeItem("nb_logged_in_user");
+            location.href = "index.html";
+          }
+        });
+      }
+
+      // Nepal cities by province
+      const cities = {
+        1: ["Biratnagar","Dharan","Itahari","Birtamode","Damak"],
+        2: ["Janakpur","Birgunj","Kalaiya","Jaleshwar"],
+        3: ["Kathmandu","Lalitpur","Bhaktapur","Hetauda","Banepa"],
+        4: ["Pokhara","Gorkha","Baglung","Waling"],
+        5: ["Butwal","Bhairahawa","Nepalgunj","Tansen"],
+        6: ["Surkhet","Jumla","Dailekh"],
+        7: ["Dhangadhi","Mahendranagar","Tikapur"]
+      };
+
+      const provinceSel = document.getElementById("sell-province");
+      const citySel = document.getElementById("sell-city");
+
+      provinceSel.addEventListener("change", () => {
+        citySel.innerHTML = "<option value=''>-- Select City --</option>";
+        if(cities[provinceSel.value]){
+          cities[provinceSel.value].forEach(c => {
+            let opt = document.createElement("option");
+            opt.value = c;
+            opt.textContent = c;
+            citySel.appendChild(opt);
+          });
+        }
+      });
+
+      // live preview
+      const titleInput = document.getElementById("sell-title");
+      const descInput = document.getElementById("sell-desc");
+      const priceInput = document.getElementById("sell-price");
+      const imgInput = document.getElementById("sell-images");
+
+      titleInput.addEventListener("input", () => {
+        document.getElementById("preview-title").textContent = titleInput.value || "Your Title";
+      });
+      descInput.addEventListener("input", () => {
+        document.getElementById("preview-desc").textContent = descInput.value || "Your description will appear here.";
+      });
+      priceInput.addEventListener("input", () => {
+        let val = priceInput.value;
+        if(val){
+          document.getElementById("preview-price").textContent = "NPR " + Number(val).toLocaleString();
+        } else {
+          document.getElementById("preview-price").textContent = "NPR 0";
+        }
+      });
+      provinceSel.addEventListener("change", () => {
+        document.getElementById("preview-address").textContent = "Address: " + (provinceSel.options[provinceSel.selectedIndex].text || "-");
+      });
+      citySel.addEventListener("change", () => {
+        const prov = provinceSel.options[provinceSel.selectedIndex].text || "";
+        const city = citySel.value || "";
+        document.getElementById("preview-address").textContent = "Address: " + city + (prov ? ", " + prov : "");
+      });
+
+      imgInput.addEventListener("change", () => {
+        const previewImages = document.getElementById("preview-images");
+        previewImages.innerHTML = "";
+        const files = [...imgInput.files].slice(0,3); // max 3
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            previewImages.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+        if(imgInput.files.length > 3){
+          alert("Maximum 3 images allowed.");
+        }
+      });
+
+      // form submit
+      document.getElementById("sell-form").addEventListener("submit", e => {
+        e.preventDefault();
+        if(window.handleSellFormSubmit){
+          window.handleSellFormSubmit();
+        }
+        document.getElementById("sell-success").style.display = "block";
+      });
+
+      // success modal close
+      document.querySelectorAll("#sell-success .close").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.getElementById("sell-success").style.display = "none";
+        });
+      });
+    });
+  </script>
+</body>
+</html>
