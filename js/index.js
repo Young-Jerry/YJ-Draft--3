@@ -1,37 +1,50 @@
-// index.js — homepage logic
+/* ========================================================================== 
+   index.js — homepage logic for Nepali Bazar
+   Features: pinned ads, trending products, load more, footer year
+   ========================================================================== */
 "use strict";
 
 function initIndex() {
-  console.log("Homepage loaded ✅");
+  console.log("Index page init 🚀");
 
-  // Update footer year
+  const pinnedGrid = document.getElementById("pinned-grid");
+  const trendingGrid = document.getElementById("trending-grid");
+  const loadMoreBtn = document.getElementById("load-more");
   const yearEl = document.getElementById("year");
-  if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
+
+  // Footer year
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // Render pinned ads
+  const pinned = getPinned();
+  if (pinnedGrid) {
+    renderGrid(pinnedGrid, pinned);
   }
 
-  // Handle pinned ads visibility (admin only)
-  const role = localStorage.getItem("nb_user_role");
-  const pinnedSection = document.getElementById("pinned-ads");
-  if (pinnedSection) {
-    pinnedSection.style.display = role === "admin" ? "flex" : "none";
-  }
+  // Render trending products
+  const products = getProducts();
+  let visibleCount = 6;
 
-  // Load More functionality
-  let itemsToShow = 10;
-  const loadMoreBtn = document.getElementById("load-more-btn");
-  const homeGrid = document.getElementById("home-grid");
+  function renderTrending() {
+    if (!trendingGrid) return;
+    trendingGrid.innerHTML = "";
+    renderGrid(trendingGrid, products.slice(0, visibleCount));
 
-  if (loadMoreBtn && homeGrid) {
-    const products = getProducts();
-    renderGrid(homeGrid, products.slice(0, itemsToShow));
-
-    loadMoreBtn.addEventListener("click", () => {
-      itemsToShow += 10;
-      renderGrid(homeGrid, products.slice(0, itemsToShow));
-      if (itemsToShow >= products.length) {
+    if (loadMoreBtn) {
+      if (visibleCount >= products.length) {
         loadMoreBtn.style.display = "none";
+      } else {
+        loadMoreBtn.style.display = "inline-block";
       }
+    }
+  }
+
+  renderTrending();
+
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", () => {
+      visibleCount += 6;
+      renderTrending();
     });
   }
 }
