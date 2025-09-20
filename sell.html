@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sell — Nepali Bazar</title>
-  <meta name="description" content="Post an ad on Nepali Bazar. Fill the form and preview your listing live." />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -14,33 +13,32 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/fixes.css">
 
-  <!-- Page CSS -->
+  <!-- Page-specific CSS -->
   <link rel="stylesheet" href="css/sell.css">
 </head>
 <body data-page="sell">
-  <!-- Header (no duplicate Sell link here) -->
+
+  <!-- Header -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="index.html" class="brand" aria-label="Nepali Bazar home">
+      <a href="index.html" class="brand">
         <div class="logo">NB</div>
         <div class="brand-text">
           <div class="brand-title">Nepali Bazar</div>
           <div class="brand-sub">Buy · Sell · Connect</div>
         </div>
       </a>
-
-      <nav class="nav" role="navigation" aria-label="Main">
+      <nav class="nav">
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link">Products</a>
         <a href="login.html" id="login-link" class="nav-link">Login</a>
-
         <div id="user-dropdown" class="user-dropdown" style="display:none;">
-          <button id="user-btn" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-            <span id="username-display"></span> ▾
+          <button id="user-btn" class="nav-link dropdown-toggle">
+            <span id="username-display"></span> ▼
           </button>
-          <div id="dropdown-menu" class="dropdown-menu" role="menu" aria-hidden="true">
-            <a href="profile.html" role="menuitem">Profile</a>
-            <a href="#" id="logout-btn" role="menuitem">Logout</a>
+          <div id="dropdown-menu" class="dropdown-menu">
+            <a href="profile.html">Profile</a>
+            <a href="#" id="logout-btn">Logout</a>
           </div>
         </div>
       </nav>
@@ -48,101 +46,97 @@
   </header>
 
   <!-- Main -->
-  <main class="container">
-    <div class="sell-layout">
-      <!-- Form -->
-      <section class="form-wrapper" aria-labelledby="create-heading">
-        <h2 id="create-heading">Create a Listing</h2>
-        <p class="muted">Fill in the details carefully. Listings expire after 7 days.</p>
+  <main class="container sell-layout">
+    <!-- Form -->
+    <div class="form-wrapper">
+      <h2>Create a Listing</h2>
+      <p class="muted">Fill in the details carefully. Listings expire after 7 days.</p>
 
-        <form id="sell-form" novalidate>
+      <form id="sell-form">
+        <div class="form-group">
           <label for="sell-title">Title</label>
-          <input id="sell-title" name="title" class="input-glow" required placeholder="e.g. Mountain Bike - Good condition">
+          <input type="text" id="sell-title" required class="input-glow" />
+        </div>
 
+        <div class="form-group">
           <label for="sell-desc">Description</label>
-          <textarea id="sell-desc" name="description" rows="4" class="input-glow" required></textarea>
+          <textarea id="sell-desc" rows="4" required class="input-glow"></textarea>
+        </div>
 
+        <div class="form-group">
           <label for="sell-price">Price (NPR)</label>
-          <input id="sell-price" name="price" type="number" min="1" class="input-glow" required>
+          <input type="number" id="sell-price" min="1" required class="input-glow" />
+        </div>
 
+        <div class="form-group">
           <label for="sell-category">Category</label>
-          <select id="sell-category" name="category" class="input-glow" required>
-            <option value="Electronics">Electronics</option>
-            <option value="Vehicles">Vehicles</option>
-            <option value="Real Estate">Real Estate</option>
-            <option value="Fashion">Fashion</option>
-            <option value="Services">Services</option>
-            <option value="Other">Other</option>
+          <select id="sell-category" class="input-glow">
+            <option>Electronics</option>
+            <option>Vehicles</option>
+            <option>Real Estate</option>
+            <option>Fashion</option>
+            <option>Services</option>
+            <option>Other</option>
           </select>
+        </div>
 
+        <div class="form-group">
           <label for="sell-province">Province</label>
-          <select id="sell-province" name="province" class="input-glow" required>
+          <select id="sell-province" class="input-glow" required>
             <option value="">-- Select Province --</option>
-            <option value="Province 1">Province 1</option>
-            <option value="Madhesh Province">Madhesh Province</option>
-            <option value="Bagmati Province">Bagmati Province</option>
-            <option value="Gandaki Province">Gandaki Province</option>
-            <option value="Lumbini Province">Lumbini Province</option>
-            <option value="Karnali Province">Karnali Province</option>
-            <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+            <option value="1">Koshi (Province 1)</option>
+            <option value="2">Madhesh Province</option>
+            <option value="3">Bagmati Province</option>
+            <option value="4">Gandaki Province</option>
+            <option value="5">Lumbini Province</option>
+            <option value="6">Karnali Province</option>
+            <option value="7">Sudurpashchim Province</option>
           </select>
+        </div>
 
+        <div class="form-group">
           <label for="sell-city">City</label>
-          <select id="sell-city" name="city" class="input-glow" required>
-            <option value="">-- Select City --</option>
-          </select>
+          <select id="sell-city" class="input-glow" required></select>
+        </div>
 
-          <label for="sell-contact">Contact (phone or email)</label>
-          <input id="sell-contact" name="contact" class="input-glow" placeholder="98XXXXXXXX or name@example.com">
-
+        <div class="form-group">
           <label for="sell-images">Images (max 3)</label>
-          <input id="sell-images" name="imageFiles" type="file" accept="image/*" multiple class="input-glow">
-          <div id="image-preview-container" class="image-preview-container" aria-live="polite"></div>
+          <input type="file" id="sell-images" accept="image/*" multiple class="input-glow" />
+          <div id="image-preview-container" class="image-preview-container"></div>
+        </div>
 
-          <button type="submit" id="publish-btn" class="btn btn-primary neon-btn" style="margin-top:1rem;">Publish Listing</button>
-        </form>
-      </section>
+        <button type="submit" class="btn btn-primary neon-btn" style="margin-top:1rem;">Publish Listing</button>
+      </form>
+    </div>
 
-      <!-- Live Preview -->
-      <aside class="preview-panel" aria-live="polite">
-        <h2>Live Preview</h2>
-        <article class="preview-card card" aria-label="Listing preview">
-          <div class="thumb preview-main-thumb">
-            <img id="preview-main-img" src="assets/images/placeholder.jpg" alt="Preview main" />
-          </div>
-
-          <div class="preview-info">
-            <h3 id="preview-title">Your Title</h3>
-            <div class="muted" id="preview-by">By: You</div>
-            <div class="muted" id="preview-address">Location: -</div>
-            <div class="price" id="preview-price">रु 0</div>
-            <p id="preview-desc" class="muted">Your description will appear here.</p>
-
-            <div id="preview-thumbs" class="preview-thumbs" aria-hidden="false"></div>
-
-            <div style="margin-top:12px;">
-              <a id="preview-contact" class="btn btn-ghost btn-small" href="#">Contact Seller</a>
-            </div>
-          </div>
-        </article>
-      </aside>
+    <!-- Live Preview -->
+    <div class="preview-panel">
+      <h2>Live Preview</h2>
+      <div class="preview-card">
+        <h3 id="preview-title">Your Title</h3>
+        <p id="preview-by" class="muted">By: You</p>
+        <p id="preview-address">Address: -</p>
+        <p id="preview-price" class="muted">NPR 0</p>
+        <p id="preview-desc">Your description will appear here.</p>
+        <div class="preview-images" id="preview-images"></div>
+      </div>
     </div>
   </main>
 
   <!-- Success Modal -->
-  <div id="sell-success" class="nb-modal" aria-hidden="true">
+  <div id="sell-success" class="nb-modal" style="display:none;">
     <div class="nb-modal-content">
-      <button class="nb-modal-close" id="sell-success-close" aria-label="Close">&times;</button>
       <h2>Listing Published 🎉</h2>
       <p>Your item has been successfully listed on Nepali Bazar. It will expire in 7 days.</p>
       <div style="margin-top:15px;">
         <a href="products.html" class="btn btn-primary neon-btn">Go to Shop</a>
         <a href="profile.html" class="btn btn-ghost">View My Listings</a>
-        <button class="btn btn-ghost" id="sell-modal-close">Close</button>
+        <button class="btn btn-ghost close">Close</button>
       </div>
     </div>
   </div>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>© <span id="year"></span> Nepali Bazar</div>
@@ -150,7 +144,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPTS: core -> page -> router -->
+  <!-- Scripts -->
   <script src="js/core.js"></script>
   <script src="js/sell.js"></script>
   <script src="js/app.js"></script>
