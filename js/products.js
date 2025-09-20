@@ -1,45 +1,52 @@
+// products.js — product listing page logic
+"use strict";
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Nepali Bazar — Products</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <header>
-    <h1>Browse Products</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="products.html">Products</a>
-      <a href="sell.html">Sell</a>
-      <a href="profile.html">Profile</a>
-    </nav>
-  </header>
+function initProducts() {
+  console.log("Products page loaded ✅");
 
-  <section class="filters">
-    <input type="text" id="search-box" placeholder="Search by title...">
-    <select id="filter-category">
-      <option value="">All Categories</option>
-      <option value="electronics">Electronics</option>
-      <option value="fashion">Fashion</option>
-    </select>
-    <input type="number" id="price-min" placeholder="Min Price">
-    <input type="number" id="price-max" placeholder="Max Price">
-    <select id="filter-sort">
-      <option value="newest">Newest</option>
-      <option value="oldest">Oldest</option>
-      <option value="price-asc">Price ↑</option>
-      <option value="price-desc">Price ↓</option>
-    </select>
-  </section>
+  const grid = document.getElementById("products-grid");
+  const searchInput = document.getElementById("search-input");
+  const categoryFilter = document.getElementById("category-filter");
+  const loadMoreBtn = document.getElementById("load-more-products");
 
-  <div id="products-grid" class="grid"></div>
-  <div id="empty-state" class="hidden">No products found.</div>
-  <div id="products-pagination"></div>
+  let itemsToShow = 12;
+  let products = getProducts();
 
-  <div id="product-modal" class="hidden" aria-hidden="true"></div>
+  // Render initial batch
+  if (grid) {
+    renderGrid(grid, products.slice(0, itemsToShow));
+  }
 
-  <script src="js/app.js"></script>
-</body>
-</html>
+  // Load More functionality
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", () => {
+      itemsToShow += 12;
+      renderGrid(grid, products.slice(0, itemsToShow));
+      if (itemsToShow >= products.length) {
+        loadMoreBtn.style.display = "none";
+      }
+    });
+  }
+
+  // Search functionality
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = products.filter(
+        p =>
+          p.title.toLowerCase().includes(query) ||
+          p.description.toLowerCase().includes(query)
+      );
+      renderGrid(grid, filtered.slice(0, itemsToShow));
+    });
+  }
+
+  // Category filter
+  if (categoryFilter) {
+    categoryFilter.addEventListener("change", () => {
+      const cat = categoryFilter.value;
+      const filtered = cat === "all" ? products : products.filter(p => p.category === cat);
+      renderGrid(grid, filtered.slice(0, itemsToShow));
+    });
+  }
+}
