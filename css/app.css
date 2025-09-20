@@ -1,1 +1,8 @@
-
+/* app.css */
+@import url("core.css");
+@import url("layout.css");
+@import url("index.css");
+@import url("products.css");
+@import url("sell.css");
+@import url("profile.css");
+@import url("fixes.css");
