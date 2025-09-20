@@ -32,5 +32,27 @@ button.btn, .btn {
   font-size: 1rem;
   border: none; cursor: pointer;
   transition: var(--transition);
-  text-decoratio
+  text-decoration: none; display: inline-block;
+  padding: 0.9rem 1.5rem; border-radius: 999px;
+  font-weight: 600;
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--neon-1), var(--neon-2));
+  color: #041026;
+  box-shadow: 0 0 15px var(--neon-1);
+}
+.btn-primary:hover {
+  background: linear-gradient(90deg, var(--neon-2), var(--neon-1));
+  color: #fff; box-shadow: 0 0 25px var(--neon-2);
+  transform: translateY(-2px);
+}
+.btn-ghost { background: transparent; border: 2px solid var(--neon-1); color: var(--neon-1); }
+.btn-ghost:hover { background: var(--neon-1); color: #041026; }
+.btn-danger { background: #ff3333; color: #fff; }
+.btn-danger:hover { background: #ff5555; }
+.btn.view-btn, .btn.delete, .btn.pin, .btn.unpin { padding: 6px 10px; font-size: 0.9rem; }
 
+@keyframes glowPulse {
+  from { box-shadow: 0 0 10px var(--neon-1); }
+  to { box-shadow: 0 0 20px var(--neon-2); }
+}
