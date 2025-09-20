@@ -1,168 +1,266 @@
 "use strict";
 
-function initSell() {
-  console.log("Sell page loaded ✅");
+/* sell.js — improved: login restriction, live preview, delete images, save via addProduct() */
 
+function initSell() {
+  console.log("Sell page init ✅");
+
+  // require core helpers
+  if (typeof getCurrentUser !== "function" || typeof addProduct !== "function" || typeof getProducts !== "function") {
+    console.error("core.js functions missing. Make sure core.js is loaded before sell.js");
+    return;
+  }
+
+  // enforce login: redirect guests to login page
+  const currentUser = getCurrentUser();
+  if (!currentUser) {
+    // user must log in
+    window.location.href = "login.html";
+    return;
+  }
+
+  // elements
   const form = document.getElementById("sell-form");
   const imageInput = document.getElementById("sell-images");
   const previewContainer = document.getElementById("image-preview-container");
-  const previewImages = document.getElementById("preview-images");
+  const previewThumbs = document.getElementById("preview-thumbs");
+  const previewMainImg = document.getElementById("preview-main-img");
+  const publishBtn = document.getElementById("publish-btn");
+  const successModal = document.getElementById("sell-success");
+  const successClose = document.getElementById("sell-success-close");
+  const successCloseBtn = document.getElementById("sell-modal-close");
 
-  let selectedFiles = [];
+  // province -> cities mapping (simple)
+  const citiesByProvince = {
+    "Province 1": ["Biratnagar", "Ilam", "Jhapa"],
+    "Madhesh Province": ["Janakpur", "Bardibas"],
+    "Bagmati Province": ["Kathmandu", "Lalitpur", "Bhaktapur"],
+    "Gandaki Province": ["Pokhara"],
+    "Lumbini Province": ["Bhairahawa", "Butwal"],
+    "Karnali Province": ["Birendranagar"],
+    "Sudurpashchim Province": ["Dhangadhi"]
+  };
 
-  // -----------------------------
-  // IMAGE HANDLING
-  // -----------------------------
-  imageInput.addEventListener("change", () => {
-    selectedFiles = Array.from(imageInput.files).slice(0, 3); // max 3
-    renderPreviews();
-    updateLivePreview();
-  });
-
-  function renderPreviews() {
-    previewContainer.innerHTML = "";
-    previewImages.innerHTML = "";
-
-    selectedFiles.forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        // Thumbnail in form
-        const wrapper = document.createElement("div");
-        wrapper.className = "image-preview";
-        wrapper.innerHTML = `
-          <img src="${e.target.result}" alt="preview">
-          <button type="button" data-index="${index}">×</button>
-        `;
-        previewContainer.appendChild(wrapper);
-
-        // Also show in live preview
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        previewImages.appendChild(img);
-      };
-      reader.readAsDataURL(file);
+  // wire province -> city population
+  const provinceEl = document.getElementById("sell-province");
+  const cityEl = document.getElementById("sell-city");
+  function populateCities() {
+    cityEl.innerHTML = '<option value="">-- Select City --</option>';
+    const prov = provinceEl.value;
+    if (!prov || !citiesByProvince[prov]) {
+      cityEl.disabled = true;
+      return;
+    }
+    cityEl.disabled = false;
+    citiesByProvince[prov].forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c; opt.textContent = c;
+      cityEl.appendChild(opt);
     });
   }
+  if (provinceEl) {
+    populateCities();
+    provinceEl.addEventListener("change", () => { populateCities(); updateLivePreview(); });
+  }
 
-  // Delete image
-  previewContainer.addEventListener("click", e => {
-    if (e.target.tagName === "BUTTON") {
-      const index = parseInt(e.target.dataset.index, 10);
-      selectedFiles.splice(index, 1);
-      renderPreviews();
-      updateLivePreview();
-    }
-  });
+  // state
+  let selectedFiles = []; // keeps File objects
 
-  // -----------------------------
-  // LIVE PREVIEW HANDLING
-  // -----------------------------
-  const fields = [
-    "sell-title",
-    "sell-desc",
-    "sell-price",
-    "sell-category",
-    "sell-province",
-    "sell-city"
-  ];
+  // helper: append new files (avoid duplicates) and cap at 3
+  function appendFiles(newFiles) {
+    const arr = Array.from(newFiles || []);
+    // simply append then slice
+    selectedFiles = selectedFiles.concat(arr).slice(0, 3);
+  }
 
-  fields.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("input", updateLivePreview);
-      el.addEventListener("change", updateLivePreview);
-    }
-  });
-
+  // update preview (text + thumbs + main image + owner)
   function updateLivePreview() {
-    document.getElementById("preview-title").textContent =
-      document.getElementById("sell-title").value || "Your Title";
-
-    document.getElementById("preview-desc").textContent =
-      document.getElementById("sell-desc").value || "Your description will appear here.";
-
-    document.getElementById("preview-price").textContent =
-      "NPR " + (document.getElementById("sell-price").value || "0");
-
+    const title = (document.getElementById("sell-title").value || "").trim();
+    const desc = (document.getElementById("sell-desc").value || "").trim();
+    const price = document.getElementById("sell-price").value || "0";
     const category = document.getElementById("sell-category").value || "-";
     const province = document.getElementById("sell-province").value || "-";
     const city = document.getElementById("sell-city").value || "-";
-    document.getElementById("preview-address").textContent =
-      `Address: ${province}, ${city} (${category})`;
+    const contact = (document.getElementById("sell-contact") && document.getElementById("sell-contact").value) || "";
 
-    const currentUser = localStorage.getItem("nb_current_user") || "demo1";
-    document.getElementById("preview-by").textContent = `By: ${currentUser}`;
+    document.getElementById("preview-title").textContent = title || "Your Title";
+    document.getElementById("preview-desc").textContent = desc || "Your description will appear here.";
+    document.getElementById("preview-price").textContent = `रु ${Number(price).toLocaleString('en-IN')}`;
+    document.getElementById("preview-address").textContent = `Location: ${city !== "-" ? city + ', ' : ''}${province !== "-" ? province : ''}`;
+    document.getElementById("preview-by").textContent = `By: ${currentUser.username || currentUser.id || "You"}`;
+    const previewContact = document.getElementById("preview-contact");
+    if (previewContact) {
+      if (contact) {
+        previewContact.href = contact.includes("@") ? `mailto:${contact}` : `tel:${contact}`;
+        previewContact.textContent = contact;
+      } else {
+        previewContact.href = "#";
+        previewContact.textContent = "Contact Seller";
+      }
+    }
+
+    // thumbnails & main image - if we have selectedFiles we show their dataURLs, else placeholder
+    previewThumbs.innerHTML = "";
+    previewMainImg.src = "assets/images/placeholder.jpg";
+
+    if (selectedFiles.length === 0) return;
+
+    // read files synchronously to show first image quickly
+    selectedFiles.forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        // main image: first loaded becomes main if none set yet
+        if (idx === 0) previewMainImg.src = ev.target.result;
+        const thumb = document.createElement("img");
+        thumb.src = ev.target.result;
+        thumb.alt = `Image ${idx + 1}`;
+        thumb.loading = "lazy";
+        thumb.addEventListener("click", () => {
+          previewMainImg.src = ev.target.result;
+        });
+        previewThumbs.appendChild(thumb);
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
-  // -----------------------------
-  // FORM SUBMIT HANDLING
-  // -----------------------------
-  form.addEventListener("submit", e => {
-    e.preventDefault();
+  // render file thumbnails in form with delete btns
+  function renderFormPreviews() {
+    previewContainer.innerHTML = "";
+    selectedFiles.forEach((file, idx) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "image-preview";
+        wrapper.innerHTML = `
+          <img src="${ev.target.result}" alt="preview">
+          <button type="button" data-index="${idx}" aria-label="Remove image">×</button>
+        `;
+        previewContainer.appendChild(wrapper);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-    const title = document.getElementById("sell-title").value.trim();
-    const desc = document.getElementById("sell-desc").value.trim();
-    const price = parseFloat(document.getElementById("sell-price").value);
-    const category = document.getElementById("sell-category").value;
-    const province = document.getElementById("sell-province").value;
-    const city = document.getElementById("sell-city").value;
+  // when file input changes: append and re-render
+  if (imageInput) {
+    imageInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
+      appendFiles(files);
+      renderFormPreviews();
+      updateLivePreview();
+      // clear native input so re-selecting same file is possible later
+      imageInput.value = "";
+    });
+  }
 
-    if (!title || !desc || isNaN(price) || price <= 0) {
-      alert("⚠ Please fill all fields correctly!");
+  // delete image handler (delegation)
+  if (previewContainer) {
+    previewContainer.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-index]");
+      if (!btn) return;
+      const idx = Number(btn.getAttribute("data-index"));
+      if (!Number.isInteger(idx)) return;
+      selectedFiles.splice(idx, 1);
+      renderFormPreviews();
+      updateLivePreview();
+    });
+  }
+
+  // wire live preview to input/select changes
+  const liveFields = ["sell-title", "sell-desc", "sell-price", "sell-category", "sell-province", "sell-city", "sell-contact"];
+  liveFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", updateLivePreview);
+    el.addEventListener("change", updateLivePreview);
+  });
+
+  // SUBMIT: validate, convert images to base64, save using addProduct()
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+
+    const title = (document.getElementById("sell-title").value || "").trim();
+    const description = (document.getElementById("sell-desc").value || "").trim();
+    const priceVal = document.getElementById("sell-price").value;
+    const price = Number(priceVal);
+    const category = document.getElementById("sell-category").value || "Other";
+    const province = document.getElementById("sell-province").value || "";
+    const city = document.getElementById("sell-city").value || "";
+    const contact = (document.getElementById("sell-contact").value || "").trim();
+
+    // basic validation
+    if (!title || !description || !category || !province || !city || isNaN(price) || price <= 0) {
+      alert("Please fill all required fields and enter a valid price.");
       return;
     }
 
-    const currentUser = localStorage.getItem("nb_current_user") || "demo1";
+    // disable button
+    publishBtn.disabled = true;
+    publishBtn.textContent = "Publishing...";
 
-    const imagePromises = selectedFiles.map(file => new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(file);
+    // read selectedFiles to dataURLs
+    const readers = selectedFiles.map(f => new Promise((res) => {
+      const r = new FileReader();
+      r.onload = (ev) => res(ev.target.result);
+      r.onerror = () => res(null);
+      r.readAsDataURL(f);
     }));
 
-    Promise.all(imagePromises).then(images => {
-      const newProduct = {
-        id: Date.now(),
+    Promise.all(readers).then(images => {
+      const filteredImages = images.filter(Boolean).slice(0, 3);
+      const product = {
+        id: String(Date.now() + Math.floor(Math.random() * 1000)),
         title,
-        description: desc,
+        description,
         price,
         category,
-        province,
-        city,
-        images,
-        pinned: false,
-        owner: currentUser
+        location: `${city}, ${province}`,
+        images: filteredImages,
+        image: filteredImages[0] || "assets/images/placeholder.jpg",
+        sellerName: currentUser.username || currentUser.id,
+        contact,
+        ownerId: currentUser.id || currentUser.username,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7 // 7 days
       };
 
-      saveProduct(newProduct);
+      try {
+        addProduct(product); // core.js function
+      } catch (e) {
+        console.error("Failed to save product", e);
+        alert("Could not save listing. See console for details.");
+      }
 
-      // Show success modal
-      document.getElementById("sell-success").style.display = "block";
+      // show success modal
+      if (successModal) {
+        successModal.setAttribute("aria-hidden", "false");
+        successModal.classList.add("open");
+      }
+
+      // reset form & preview
       form.reset();
-      resetPreview();
+      selectedFiles = [];
+      renderFormPreviews();
+      updateLivePreview();
+    }).finally(() => {
+      publishBtn.disabled = false;
+      publishBtn.textContent = "Publish Listing";
     });
   });
 
-  // -----------------------------
-  // RESET & MODAL
-  // -----------------------------
-  form.addEventListener("reset", () => {
-    resetPreview();
+  // modal close
+  if (successClose) successClose.addEventListener("click", () => {
+    successModal.setAttribute("aria-hidden", "true");
+    successModal.classList.remove("open");
+  });
+  if (successCloseBtn) successCloseBtn.addEventListener("click", () => {
+    successModal.setAttribute("aria-hidden", "true");
+    successModal.classList.remove("open");
   });
 
-  function resetPreview() {
-    selectedFiles = [];
-    previewContainer.innerHTML = "";
-    previewImages.innerHTML = "";
-    updateLivePreview();
-  }
-
-  document.querySelectorAll("#sell-success .close").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.getElementById("sell-success").style.display = "none";
-    });
-  });
-
-  // Initial preview setup
+  // init preview
   updateLivePreview();
+  renderFormPreviews();
 }
