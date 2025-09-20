@@ -6,10 +6,13 @@ function initSell() {
   const form = document.getElementById("sell-form");
   const imageInput = document.getElementById("sell-images");
   const previewContainer = document.getElementById("image-preview-container");
+  const previewImages = document.getElementById("preview-images");
 
   let selectedFiles = [];
 
-  // Handle image preview
+  // -----------------------------
+  // IMAGE HANDLING
+  // -----------------------------
   imageInput.addEventListener("change", () => {
     selectedFiles = Array.from(imageInput.files).slice(0, 3); // max 3
     renderPreviews();
@@ -18,13 +21,12 @@ function initSell() {
 
   function renderPreviews() {
     previewContainer.innerHTML = "";
-    const previewImages = document.getElementById("preview-images");
     previewImages.innerHTML = "";
 
     selectedFiles.forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = e => {
-        // Thumbnail preview in form
+        // Thumbnail in form
         const wrapper = document.createElement("div");
         wrapper.className = "image-preview";
         wrapper.innerHTML = `
@@ -42,7 +44,7 @@ function initSell() {
     });
   }
 
-  // Handle delete button
+  // Delete image
   previewContainer.addEventListener("click", e => {
     if (e.target.tagName === "BUTTON") {
       const index = parseInt(e.target.dataset.index, 10);
@@ -52,22 +54,49 @@ function initSell() {
     }
   });
 
-  // Live preview updates for text fields
-  ["sell-title", "sell-desc", "sell-price", "sell-category", "sell-province", "sell-city"]
-    .forEach(id => {
-      document.getElementById(id).addEventListener("input", updateLivePreview);
-    });
+  // -----------------------------
+  // LIVE PREVIEW HANDLING
+  // -----------------------------
+  const fields = [
+    "sell-title",
+    "sell-desc",
+    "sell-price",
+    "sell-category",
+    "sell-province",
+    "sell-city"
+  ];
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", updateLivePreview);
+      el.addEventListener("change", updateLivePreview);
+    }
+  });
 
   function updateLivePreview() {
-    document.getElementById("preview-title").textContent = document.getElementById("sell-title").value || "Your Title";
-    document.getElementById("preview-desc").textContent = document.getElementById("sell-desc").value || "Your description will appear here.";
-    document.getElementById("preview-price").textContent = "NPR " + (document.getElementById("sell-price").value || "0");
+    document.getElementById("preview-title").textContent =
+      document.getElementById("sell-title").value || "Your Title";
+
+    document.getElementById("preview-desc").textContent =
+      document.getElementById("sell-desc").value || "Your description will appear here.";
+
+    document.getElementById("preview-price").textContent =
+      "NPR " + (document.getElementById("sell-price").value || "0");
+
+    const category = document.getElementById("sell-category").value || "-";
     const province = document.getElementById("sell-province").value || "-";
     const city = document.getElementById("sell-city").value || "-";
-    document.getElementById("preview-address").textContent = `Address: ${province}, ${city}`;
+    document.getElementById("preview-address").textContent =
+      `Address: ${province}, ${city} (${category})`;
+
+    const currentUser = localStorage.getItem("nb_current_user") || "demo1";
+    document.getElementById("preview-by").textContent = `By: ${currentUser}`;
   }
 
-  // Form submit
+  // -----------------------------
+  // FORM SUBMIT HANDLING
+  // -----------------------------
   form.addEventListener("submit", e => {
     e.preventDefault();
 
@@ -85,7 +114,6 @@ function initSell() {
 
     const currentUser = localStorage.getItem("nb_current_user") || "demo1";
 
-    // Convert selected files to base64
     const imagePromises = selectedFiles.map(file => new Promise(resolve => {
       const reader = new FileReader();
       reader.onload = e => resolve(e.target.result);
@@ -108,20 +136,33 @@ function initSell() {
 
       saveProduct(newProduct);
 
-      // Show modal
+      // Show success modal
       document.getElementById("sell-success").style.display = "block";
       form.reset();
-      selectedFiles = [];
-      previewContainer.innerHTML = "";
-      document.getElementById("preview-images").innerHTML = "";
-      updateLivePreview();
+      resetPreview();
     });
   });
 
-  // Close modal
+  // -----------------------------
+  // RESET & MODAL
+  // -----------------------------
+  form.addEventListener("reset", () => {
+    resetPreview();
+  });
+
+  function resetPreview() {
+    selectedFiles = [];
+    previewContainer.innerHTML = "";
+    previewImages.innerHTML = "";
+    updateLivePreview();
+  }
+
   document.querySelectorAll("#sell-success .close").forEach(btn => {
     btn.addEventListener("click", () => {
       document.getElementById("sell-success").style.display = "none";
     });
   });
+
+  // Initial preview setup
+  updateLivePreview();
 }
