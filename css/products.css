@@ -1,1 +1,22 @@
+/* === Products Grid === */
+.product-card {
+  background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+.product-card img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px var(--neon-1);
+}
+.product-card h3 { font-size: 1rem; margin-bottom: 6px; }
+.product-card .price { font-weight: 700; color: var(--neon-1); }
 
