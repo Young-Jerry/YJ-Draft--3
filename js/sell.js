@@ -7,6 +7,9 @@ function initSell() {
   const form = document.getElementById("sell-form");
   if (!form) return;
 
+  // Get current user (placeholder: demo1 for now)
+  const currentUser = localStorage.getItem("nb_current_user") || "demo1";
+
   form.addEventListener("submit", e => {
     e.preventDefault();
 
@@ -28,7 +31,8 @@ function initSell() {
       category,
       description,
       image: image || "assets/placeholder.jpg",
-      pinned: false
+      pinned: false,
+      owner: currentUser   // 👈 track who posted it
     };
 
     // Save to local storage
@@ -37,7 +41,7 @@ function initSell() {
     alert("✅ Product posted successfully!");
     form.reset();
 
-    // Optionally redirect to products page
+    // Redirect to products page
     window.location.href = "products.html";
   });
 }
