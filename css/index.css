@@ -85,19 +85,13 @@
   align-items: flex-start;
   margin-top: 20px;
 }
-
-/* Left column (products) */
 #products-section { flex: 3; }
-
-/* Right column (sidebar) */
 .products-sidebar {
   flex: 1;
   max-width: 300px;
   position: sticky;
   top: 80px;
 }
-
-/* Banner itself */
 .promo-banner img {
   width: 100%;
   border-radius: 8px;
