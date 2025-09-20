@@ -1,11 +1,8 @@
-/* ========================================================================== 
-   app.js — tiny router for Nepali Bazar
-   Calls init functions based on <body data-page="">
-   ========================================================================== */
+// app.js — small router
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  initCore(); // always run shared setup first
+  initCore();
 
   const page = document.body.dataset.page;
 
@@ -23,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (typeof initProfile === "function") initProfile();
       break;
     default:
-      console.log("No init for this page.");
+      // nothing
+      break;
   }
 });
