@@ -8,79 +8,11 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="css/styles.css">
-
-  <style>
-    .profile-header-note { 
-      color: var(--muted); 
-      margin-bottom: 1.2rem; 
-      font-size: 0.9rem;
-    }
-    .empty-state {
-      padding: 2rem;
-      border: 1px dashed var(--border);
-      border-radius: 12px;
-      text-align: center;
-      color: var(--muted);
-    }
-    .admin-badge {
-      background: #ff4444;
-      color: #fff;
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      margin-left: 5px;
-    }
-    .sidebar-card ul {
-      margin: 0.5rem 0 0;
-      padding-left: 1.2rem;
-      font-size: 0.9rem;
-    }
-    .sidebar-card ul li {
-      margin: 0.3rem 0;
-    }
-
-    /* Listing card styling */
-    .listing-card {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 1rem;
-      color: #fff;
-      box-shadow: 0 0 12px rgba(0,255,200,0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      transition: transform 0.2s;
-    }
-    .listing-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 18px rgba(0,255,200,0.25);
-    }
-    .listing-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .listing-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    .listing-meta {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .listing-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .listing-actions .btn {
-      font-size: 0.8rem;
-      padding: 4px 10px;
-    }
-  </style>
+  <!-- CSS (unified) -->
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/fixes.css">
+  <link rel="stylesheet" href="css/profile.css">
 </head>
 <body class="dark-bg">
   <!-- Header -->
@@ -155,48 +87,6 @@
 
   <!-- Scripts -->
   <script src="js/app.js"></script>
-<script src="js/profile.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // footer year
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      // auth check
-      const user = localStorage.getItem('nb_logged_in_user');
-      if(!user){
-        alert('Please log in to access your profile.');
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // header auth links
-      const authLinks = document.getElementById("auth-links");
-      authLinks.innerHTML = `
-        <span class="nav-link">Hi, <b>${user}</b>${user==="sohaum" ? '<span class="admin-badge">Admin</span>' : ''}</span> |
-        <a href="#" id="logout-btn-header" class="nav-link">Logout</a> |
-        <a href="profile.html" class="nav-link active">Profile</a>
-      `;
-      document.getElementById("logout-btn-header").addEventListener("click", (e) => {
-        e.preventDefault();
-        if(confirm("Are you sure you want to logout?")){
-          localStorage.removeItem("nb_logged_in_user");
-          location.href = "index.html";
-        }
-      });
-
-      // sidebar username
-      document.getElementById('profile-username').textContent = user;
-
-      // render profile listings with role hierarchy
-      if(window.renderProfilePage) window.renderProfilePage(user);
-
-      // modal close handlers
-      const modal = document.getElementById("nb-modal");
-      const closeModal = () => modal.style.display = "none";
-      modal.querySelector(".nb-modal-close").addEventListener("click", closeModal);
-      window.addEventListener("click", e => { if(e.target === modal) closeModal(); });
-      document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
-    });
-  </script>
+  <script src="js/profile.js"></script>
 </body>
 </html>
