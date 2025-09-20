@@ -1,10 +1,10 @@
-// index.js – page-specific logic for index.html
+// index.js — homepage specific scripts
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---------- Footer Year ----------
+  // Footer year
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // ---------- Auth Handling ----------
+  // Auth handling
   const user = localStorage.getItem("nb_logged_in_user");
   const role = localStorage.getItem("nb_user_role"); // 'admin' | 'user' | null
   const loginLink = document.getElementById("login-link");
@@ -26,24 +26,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------- Role-based Pinned Ads ----------
+  // Role-based Pinned Ads visibility
   const pinnedSection = document.getElementById("pinned-ads");
-  if (pinnedSection) {
-    if (role === "admin") {
-      pinnedSection.style.display = "flex"; // show for admin
-    } else {
-      pinnedSection.style.display = "none"; // hide for normal users & visitors
-    }
+  if (role === "admin") {
+    pinnedSection.style.display = "flex"; // visible
+  } else {
+    pinnedSection.style.display = "none"; // hide for normal + visitors
   }
 
-  // ---------- User Dropdown ----------
+  // User dropdown toggle
   const userBtn = document.getElementById("user-btn");
   if (userBtn) {
     userBtn.addEventListener("click", (e) => {
       e.preventDefault();
       userDropdown.classList.toggle("active");
     });
-
     window.addEventListener("click", (e) => {
       if (!userDropdown.contains(e.target)) {
         userDropdown.classList.remove("active");
@@ -51,26 +48,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------- Modal Handling ----------
+  // Modal handling
   const modal = document.getElementById("nb-modal");
   const modalClose = document.getElementById("modal-close");
+  modalClose.addEventListener("click", () => modal.classList.remove("active"));
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") modal.classList.remove("active");
+  });
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.classList.remove("active");
+  });
 
-  if (modal && modalClose) {
-    modalClose.addEventListener("click", () => modal.classList.remove("active"));
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") modal.classList.remove("active");
-    });
-
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.classList.remove("active");
-    });
-  }
-
-  // ---------- Load More Button ----------
+  // Load More button
   let itemsToShow = 10;
   const loadMoreBtn = document.getElementById("load-more-btn");
-
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener("click", () => {
       itemsToShow += 10;
