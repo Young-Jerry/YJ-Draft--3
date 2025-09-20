@@ -1,23 +1,26 @@
-// app.js — tiny router to call page inits
+/* ========================================================================== 
+   app.js — tiny router for Nepali Bazar
+   Calls init functions based on <body data-page="">
+   ========================================================================== */
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
   initCore(); // always run shared setup first
 
-  const page = document.body.dataset.page; // add data-page="index" etc. in <body>
+  const page = document.body.dataset.page;
 
   switch (page) {
     case "index":
-      initIndex();
+      if (typeof initIndex === "function") initIndex();
       break;
     case "products":
-      initProducts();
+      if (typeof initProducts === "function") initProducts();
       break;
     case "sell":
-      initSell();
+      if (typeof initSell === "function") initSell();
       break;
     case "profile":
-      initProfile();
+      if (typeof initProfile === "function") initProfile();
       break;
     default:
       console.log("No init for this page.");
