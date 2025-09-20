@@ -1,4 +1,7 @@
-// core.js — shared utilities for Nepali Bazar
+/* ========================================================================== 
+   core.js — shared utilities for Nepali Bazar
+   Features: storage helpers, product helpers, auth, pin/wishlist, grid rendering
+   ========================================================================== */
 "use strict";
 
 // ------------------ CONFIG ------------------
