@@ -2,93 +2,46 @@
 
 .sell-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin: 2rem 0;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  margin: 20px auto;
+  max-width: var(--maxwidth);
+  padding: 0 20px 40px;
 }
 
-.form-wrapper, .preview-panel {
-  background: var(--bg-light);
-  padding: 2rem;
-  border-radius: var(--radius);
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+.form-wrapper {
+  background: rgba(255,255,255,0.02);
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+  box-shadow: var(--shadow);
 }
+.form-wrapper h2 { margin-bottom: 8px; font-family: "Orbitron", sans-serif; }
+.input-glow { width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color:#e6f0ff; margin-top:6px; }
 
-.form-wrapper h2, .preview-panel h2 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: var(--primary);
-}
+/* image preview thumbnails */
+.image-preview-container { display:flex; gap:12px; margin-top:10px; flex-wrap:wrap; }
+.image-preview { position:relative; width:110px; height:110px; border-radius:10px; overflow:hidden; background:#061224; border:1px solid rgba(255,255,255,0.03); }
+.image-preview img { width:100%; height:100%; object-fit:cover; display:block; }
+.image-preview button { position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:50%; border:none; background:rgba(255,0,0,0.85); color:#fff; cursor:pointer; font-weight:700; }
 
-.sell-form .form-group {
-  margin-bottom: 1rem;
-}
+/* Preview panel */
+.preview-panel { position:relative; }
+.preview-card { padding:12px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); box-shadow: var(--shadow); display:flex; flex-direction:column; gap:12px; }
+.preview-main-thumb { width:100%; height:220px; border-radius:8px; overflow:hidden; background:#061224; display:flex; align-items:center; justify-content:center; }
+.preview-main-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.preview-info h3 { margin:6px 0; color:#fff; }
+.preview-thumbs { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.preview-thumbs img { width:64px; height:56px; object-fit:cover; border-radius:6px; cursor:pointer; border:1px solid rgba(255,255,255,0.04); }
 
-.sell-form button {
-  width: 100%;
-}
+/* modal */
+.nb-modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); z-index:9999; }
+.nb-modal[aria-hidden="false"], .nb-modal.open { display:flex; }
+.nb-modal-content { background: linear-gradient(180deg, rgba(8,12,20,0.98), rgba(12,18,30,0.98)); padding:18px; border-radius:12px; width:min(720px,95%); box-shadow:var(--shadow); position:relative; }
+.nb-modal-close { position:absolute; right:12px; top:12px; width:36px; height:36px; border-radius:50%; background:var(--neon-1); color:#041026; border:none; font-weight:700; cursor:pointer; }
 
-/* Image preview thumbnails */
-.image-preview-container {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.image-preview {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  border: 2px solid var(--primary);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.4);
-}
-
-.image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-preview button {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: rgba(255,0,0,0.8);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Preview card */
-.preview-card {
-  background: #111;
-  padding: 1rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--primary);
-}
-
-.preview-card h3 {
-  color: var(--primary);
-  margin-bottom: 0.5rem;
-}
-
-.preview-images {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.preview-images img {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius);
-  object-fit: cover;
-  border: 1px solid #444;
+@media (max-width:980px) {
+  .sell-layout { grid-template-columns: 1fr; padding: 0 12px; }
+  .preview-panel { order:-1; margin-bottom:12px; }
+  .preview-main-thumb { height:200px; }
 }
