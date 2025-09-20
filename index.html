@@ -1,72 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nepali Bazar — Home</title>
+  <meta name="description" content="Nepali Bazar — Buy, Sell, Connect Locally. Browse latest listings, post ads & more." />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/core.css" />
-  <link rel="stylesheet" href="css/layout.css" />
-  <link rel="stylesheet" href="css/index.css" />
-  <link rel="stylesheet" href="css/fixes.css" />
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/fixes.css">
 </head>
 <body data-page="index">
-  <!-- HEADER -->
   <header class="site-header">
-    <div class="container flex-between">
-      <h1 class="logo">Nepali Bazar</h1>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="products.html">Browse</a>
-        <a href="sell.html">Sell</a>
-        <a href="profile.html">Profile</a>
-        <button id="logout-btn" class="btn btn-ghost">Logout</button>
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <div class="logo">NB</div>
+        <div class="brand-text">
+          <div class="brand-title">Nepali Bazar</div>
+          <div class="brand-sub">Buy · Sell · Connect</div>
+        </div>
+      </a>
+
+      <nav class="nav">
+        <a href="products.html" class="nav-link">Shop</a>
+        <a href="sell.html" class="nav-link cta">Post Ad</a>
+        <a href="login.html" id="login-link" class="nav-link">Login</a>
+
+        <div id="user-dropdown" class="user-dropdown" style="display: none;">
+          <button id="user-btn" class="nav-link dropdown-toggle">
+            <span id="username-display"></span> ▼
+          </button>
+          <div id="dropdown-menu" class="dropdown-menu">
+            <a href="profile.html">Profile</a>
+            <a href="#" id="logout-btn">Logout</a>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
 
-  <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="container hero-inner">
-        <h2>Buy, Sell, Discover.</h2>
-        <p class="muted">The futuristic Nepali marketplace with neon vibes.</p>
-        <a href="sell.html" class="btn btn-primary">Start Selling</a>
-      </div>
-    </section>
-
-    <!-- PINNED ADS -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">📌 Pinned Ads</h2>
-        <div id="pinned-grid" class="product-grid"></div>
-      </div>
-    </section>
-
-    <!-- TRENDING -->
-    <section class="section">
-      <div class="container">
-        <h2 class="section-title">🔥 Trending Now</h2>
-        <div id="trending-grid" class="product-grid"></div>
-        <div class="center mt-2">
-          <button id="load-more" class="btn btn-primary">Load More</button>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-left">
+        <h1 class="hero-title">
+          <span class="accent site-name">Nepali Bazar</span><br>
+          Buy • Sell • Connect — Locally
+        </h1>
+        <p class="hero-sub">
+          Discover fresh groceries, electronics, clothing, and more.
+        </p>
+        <div class="hero-buttons">
+          <a href="products.html" class="btn btn-primary">Discover Shop</a>
+          <a href="sell.html" class="btn btn-ghost">Start Selling</a>
         </div>
       </div>
-    </section>
+      <div class="hero-right">
+        <div class="pinned-grid" id="pinned-ads"></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container main-grid">
+    <div class="content">
+      <div class="section-head">
+        <h2>Latest Listings</h2>
+      </div>
+      <div class="card-grid" id="home-grid">
+        <!-- JS inject product cards here -->
+      </div>
+      <div class="load-more-wrap">
+        <button id="load-more-btn" class="btn btn-ghost">Load More</button>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="ad-slot">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="assets/images/ad1.jpg" alt="Ad 1" class="ad-img" loading="lazy" />
+        </a>
+      </div>
+      <div class="ad-slot">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="assets/images/ad2.jpg" alt="Ad 2" class="ad-img" loading="lazy" />
+        </a>
+      </div>
+      <div class="sidebar-card">
+        <h3>Start Selling Now</h3>
+        <p>Find your buyer right away. Completely for free.</p>
+        <a href="sell.html" class="btn btn-ghost">Start Selling</a>
+      </div>
+    </aside>
   </main>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
-    <div class="container center">
-      <p>&copy; <span id="year"></span> Nepali Bazar. All rights reserved.</p>
+    <div class="container footer-inner">
+      <p class="muted">© <span id="year"></span> Nepali Bazar · All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- SCRIPTS -->
+  <div id="nb-modal" class="nb-modal" aria-hidden="true">
+    <div class="nb-modal-content">
+      <span class="nb-modal-close" id="modal-close" role="button" aria-label="Close modal">&times;</span>
+      <div id="nb-modal-body"></div>
+    </div>
+  </div>
+
   <script src="js/core.js"></script>
   <script src="js/index.js"></script>
   <script src="js/app.js"></script>
