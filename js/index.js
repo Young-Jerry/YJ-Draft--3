@@ -1,37 +1,43 @@
-/* ========================================================================== 
-   index.js — homepage logic for Nepali Bazar
-   Features: pinned ads, trending products, load more, footer year
-   ========================================================================== */
+// index.js — page-specific behaviour for index
 "use strict";
 
 function initIndex() {
-  console.log("Index page init 🚀");
+  console.log("initIndex running");
 
-  const pinnedGrid = document.getElementById("pinned-grid");
-  const trendingGrid = document.getElementById("trending-grid");
-  const loadMoreBtn = document.getElementById("load-more");
   const yearEl = document.getElementById("year");
-
-  // Footer year
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // Render pinned ads
-  const pinned = getPinned();
-  if (pinnedGrid) {
-    renderGrid(pinnedGrid, pinned);
+  const pinnedAdsContainer = document.getElementById("pinned-ads");
+  const homeGrid = document.getElementById("home-grid");
+  const loadMoreBtn = document.getElementById("load-more-btn");
+
+  // First, get products
+  const products = getProducts();
+
+  // Render pinned ads (admin only)
+  const current = getCurrentUser();
+  if (pinnedAdsContainer) {
+    if (current && current.role === "admin") {
+      const pinnedIds = getPinned();
+      const pinnedProducts = products.filter(p => pinnedIds.includes(String(p.id)));
+      if (pinnedProducts.length) {
+        renderGrid(pinnedAdsContainer, pinnedProducts);
+      } else {
+        pinnedAdsContainer.innerHTML = "<p class='muted'>No pinned ads</p>";
+      }
+    } else {
+      pinnedAdsContainer.style.display = "none";
+    }
   }
 
-  // Render trending products
-  const products = getProducts();
-  let visibleCount = 6;
-
-  function renderTrending() {
-    if (!trendingGrid) return;
-    trendingGrid.innerHTML = "";
-    renderGrid(trendingGrid, products.slice(0, visibleCount));
-
+  // Trending + Load More
+  let itemsToShow = 6;
+  function renderHomeGrid() {
+    if (!homeGrid) return;
+    const slice = products.slice(0, itemsToShow);
+    renderGrid(homeGrid, slice);
     if (loadMoreBtn) {
-      if (visibleCount >= products.length) {
+      if (itemsToShow >= products.length) {
         loadMoreBtn.style.display = "none";
       } else {
         loadMoreBtn.style.display = "inline-block";
@@ -39,12 +45,12 @@ function initIndex() {
     }
   }
 
-  renderTrending();
+  renderHomeGrid();
 
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener("click", () => {
-      visibleCount += 6;
-      renderTrending();
+      itemsToShow += 6;
+      renderHomeGrid();
     });
   }
 }
