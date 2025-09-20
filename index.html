@@ -1,121 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nepali Bazar</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nepali Bazar — Buy · Sell · Connect (Local Marketplace)</title>
+  <meta name="description" content="Nepali Bazar — local marketplace to buy, sell and connect. Browse listings, post ads, and manage your account." />
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/core.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/fixes.css">
+  <!-- Single combined CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Prefer reduced motion for accessibility -->
+  <script>
+    (function() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reduced-motion');
+      }
+    })();
+  </script>
 </head>
 <body data-page="index">
-  <!-- Header -->
-  <header class="site-header">
+
+  <!-- SITE HEADER -->
+  <header class="site-header" role="banner">
     <div class="container header-inner">
-      <a href="index.html" class="brand">
-        <div class="logo">NB</div>
+      <a href="index.html" class="brand" aria-label="Nepali Bazar home">
+        <div class="logo" aria-hidden="true">NB</div>
         <div class="brand-text">
           <div class="brand-title">Nepali Bazar</div>
           <div class="brand-sub">Buy · Sell · Connect</div>
         </div>
       </a>
 
-      <nav class="nav">
+      <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">☰</button>
+
+      <nav id="main-nav" class="nav" role="navigation">
         <a href="products.html" class="nav-link">Shop</a>
         <a href="sell.html" class="nav-link cta">Post Ad</a>
-        <a href="login.html" id="login-link" class="nav-link">Login</a>
-        <div id="user-dropdown" class="user-dropdown" style="display:none;">
-          <button id="user-btn" class="nav-link dropdown-toggle">
-            <span id="username-display"></span> ▼
+        <a href="login.html" id="login-link" class="nav-link" data-visible="true">Login</a>
+
+        <div id="user-dropdown" class="user-dropdown" data-visible="false">
+          <button id="user-btn" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+            <span id="username-display">User</span> ▾
           </button>
-          <div id="dropdown-menu" class="dropdown-menu">
-            <a href="profile.html">Profile</a>
-            <a href="#" id="logout-btn">Logout</a>
+          <div id="dropdown-menu" class="dropdown-menu" role="menu" aria-hidden="true">
+            <a href="profile.html" role="menuitem">Profile</a>
+            <a href="#" id="logout-btn" role="menuitem">Logout</a>
           </div>
         </div>
       </nav>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
     <div class="container hero-inner">
       <div class="hero-left">
-        <h1 class="hero-title">
+        <div class="brand-line">Local · Trusted · Fast</div>
+        <h1 id="hero-title" class="hero-title">
           <span class="accent site-name">Nepali Bazar</span><br>
           Buy • Sell • Connect — Locally
         </h1>
         <p class="hero-sub">
-          Discover fresh groceries, electronics, clothing, and more.
+          Discover fresh groceries, electronics, clothing and community offers — right in your neighbourhood.
         </p>
         <div class="hero-buttons">
           <a href="products.html" class="btn btn-primary">Discover Shop</a>
           <a href="sell.html" class="btn btn-ghost">Start Selling</a>
         </div>
       </div>
-      <div class="hero-right">
-        <div class="pinned-grid" id="pinned-ads"></div>
+
+      <div class="hero-right" aria-hidden="true">
+        <!-- small preview cards (admin pinned) -->
+        <div class="pinned-grid" id="pinned-ads" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 
-  <!-- Main Grid -->
-  <main class="container main-grid">
+  <!-- MAIN -->
+  <main class="container main-grid" id="main" role="main">
     <div class="content">
       <div class="section-head">
         <h2>Latest Listings</h2>
+        <p class="muted">Newly posted items from sellers in your area</p>
       </div>
-      <div class="card-grid" id="home-grid">
+
+      <div class="card-grid" id="home-grid" aria-live="polite">
         <!-- JS will inject product cards -->
       </div>
+
       <div class="load-more-wrap">
-        <button id="load-more-btn" class="btn btn-ghost">Load More</button>
+        <button id="load-more-btn" class="btn btn-ghost" aria-live="polite">Load More</button>
       </div>
     </div>
 
-    <aside class="sidebar">
+    <aside class="sidebar" role="complementary" aria-label="Sidebar">
       <div class="ad-slot">
-        <a href="#" target="_blank">
-          <img src="assets/images/ad1.jpg" alt="Ad 1" class="ad-img" />
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="assets/images/ad1.jpg" alt="Promotional ad" class="ad-img" loading="lazy" />
         </a>
       </div>
-      <div class="ad-slot">
-        <a href="#" target="_blank">
-          <img src="assets/images/ad2.jpg" alt="Ad 2" class="ad-img" />
-        </a>
-      </div>
+
       <div class="sidebar-card">
         <h3>Start Selling Now</h3>
-        <p>Find your buyer right away. Completely for free.</p>
+        <p>Post an ad in seconds and find buyers near you — free of charge.</p>
         <a href="sell.html" class="btn btn-ghost">Start Selling</a>
       </div>
     </aside>
   </main>
 
-  <!-- Footer -->
-  <footer class="site-footer">
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
     <div class="container footer-inner">
       <p class="muted">© <span id="year"></span> Nepali Bazar · All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Modal -->
-  <div id="nb-modal" class="nb-modal">
-    <div class="nb-modal-content">
-      <span class="nb-modal-close" id="modal-close">&times;</span>
+  <!-- MODAL -->
+  <div id="nb-modal" class="nb-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="nb-modal-title">
+    <div class="nb-modal-content" role="document">
+      <button class="nb-modal-close" id="modal-close" aria-label="Close dialog">&times;</button>
       <div id="nb-modal-body"></div>
     </div>
   </div>
 
-  <!-- JS -->
-  <script src="js/core.js"></script>
-  <script src="js/index.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Single combined JS (deferred) -->
+  <script defer src="js/app.js"></script>
 </body>
 </html>
