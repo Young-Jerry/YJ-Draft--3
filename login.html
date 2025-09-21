@@ -13,8 +13,7 @@
   <!-- Page CSS -->
   <link rel="stylesheet" href="css/login.css">
 </head>
-<body class="dark-bg">
-
+<body class="dark-bg" data-page="login">
   <!-- Header -->
   <header class="site-header">
     <div class="container header-inner">
@@ -30,8 +29,10 @@
         <a href="index.html" class="nav-link">Home</a>
         <a href="products.html" class="nav-link">Products</a>
         <a href="sell.html" class="nav-link cta">Sell</a>
+        <!-- login link -->
         <a href="login.html" id="login-link" class="nav-link">Login</a>
-        <span id="user-info" class="nav-link" style="display:none;">
+        <!-- user dropdown/info -->
+        <span id="user-dropdown" class="nav-link" style="display:none;">
           Hi, <span id="username-display"></span> |
           <a href="#" id="logout-btn" class="nav-link">Logout</a> |
           <a href="profile.html" class="nav-link">Profile</a>
@@ -70,5 +71,6 @@
   <!-- Scripts -->
   <script src="js/core.js"></script>
   <script src="js/login.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
