@@ -1,103 +1,86 @@
-/* login.css — improved form layout & styling */
+/* login.css – overrides to make login page match index.html theme */
 
-.auth-wrap {
-  min-height: 70vh;
+/* Ensure full height with dark background */
+body[data-page="login"] {
+  background: var(--dark-bg, #0b0b0f); /* matches index.html */
+  color: var(--text-color, #f0f0f0);
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem 1rem;
+  flex-direction: column;
 }
 
+/* Center auth card */
+.auth-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Card styling */
 .auth-card {
-  background: rgba(15,20,35,0.95);
-  padding: 2.5rem 2rem;
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  background: rgba(20, 20, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
   width: 100%;
   max-width: 400px;
-  color: #e6f0ff;
+  box-shadow: 0 0 20px rgba(0, 255, 150, 0.3); /* neon glow */
+  animation: fadeIn 0.5s ease-out;
 }
 
 .auth-card h2 {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00ff99;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.form-grid label {
-  display: block;
-  margin-bottom: 1rem;
-  color: #ccc;
-}
-
-.form-grid input[type="text"],
-.form-grid input[type="password"],
-.form-grid input[type="number"],
-.form-grid input[type="email"] {
+/* Inputs */
+.input {
   width: 100%;
-  padding: 0.8rem 1rem;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  margin-top: 0.5rem;
 }
 
-.form-grid input:focus {
-  border-color: var(--neon-1);
-  background: rgba(0,230,255,0.1);
+.input:focus {
+  border-color: #00ff99;
   outline: none;
+  box-shadow: 0 0 6px #00ff99;
 }
 
-.form-actions {
-  margin-top: 1.8rem;
-  text-align: center;
+/* Button */
+.form-actions .btn-primary {
+  width: 100%;
+  background: linear-gradient(90deg, #00ffcc, #00ff66);
+  border: none;
+  color: #000;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
-.btn-primary {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+.form-actions .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px #00ff99;
 }
 
-.btn-primary:hover {
-  box-shadow: 0 0 15px var(--neon-1);
-}
-
+/* Message */
 #login-msg {
-  margin-top: 1rem;
   text-align: center;
-  font-size: 0.9rem;
-  color: var(--muted);
+  margin-top: 1rem;
 }
 
-.site-header {
-  /* Ensure header stands out cleanly above the dark background */
-  background: var(--bg-1);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.nav-link {
-  color: #e6f0ff;
-}
-
-.nav-link:hover {
-  color: var(--neon-1);
-}
-
-@media (max-width: 480px) {
-  .auth-card {
-    padding: 2rem 1rem;
-    width: 100%;
-    margin: 0 1rem;
-  }
-
-  .auth-card h2 {
-    font-size: 1.6rem;
-  }
-
-  .form-grid input {
-    font-size: 0.95rem;
-  }
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
