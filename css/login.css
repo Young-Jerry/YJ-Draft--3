@@ -1,34 +1,103 @@
-/* login.css – overrides for login page */
+/* login.css — improved form layout & styling */
 
 .auth-wrap {
+  min-height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  padding: 2rem 1rem;
 }
 
 .auth-card {
-  background: #111;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0, 255, 200, 0.2);
-  max-width: 400px;
+  background: rgba(15,20,35,0.95);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   width: 100%;
-  text-align: center;
+  max-width: 400px;
+  color: #e6f0ff;
 }
 
 .auth-card h2 {
   font-family: 'Orbitron', sans-serif;
-  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .form-grid label {
   display: block;
   margin-bottom: 1rem;
-  text-align: left;
+  color: #ccc;
+}
+
+.form-grid input[type="text"],
+.form-grid input[type="password"],
+.form-grid input[type="number"],
+.form-grid input[type="email"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.form-grid input:focus {
+  border-color: var(--neon-1);
+  background: rgba(0,230,255,0.1);
+  outline: none;
 }
 
 .form-actions {
+  margin-top: 1.8rem;
+  text-align: center;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 15px var(--neon-1);
+}
+
+#login-msg {
   margin-top: 1rem;
   text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.site-header {
+  /* Ensure header stands out cleanly above the dark background */
+  background: var(--bg-1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link {
+  color: #e6f0ff;
+}
+
+.nav-link:hover {
+  color: var(--neon-1);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 2rem 1rem;
+    width: 100%;
+    margin: 0 1rem;
+  }
+
+  .auth-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .form-grid input {
+    font-size: 0.95rem;
+  }
 }
