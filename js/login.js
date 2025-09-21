@@ -1,35 +1,26 @@
-/* login.js – handles login form */
-"use strict";
+/* ========================================================================
+   login.js – Handles login form
+   ======================================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#loginForm");
+  const errorBox = document.querySelector("#errorBox");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const loginForm = document.getElementById("login-form");
-  const loginMsg = document.getElementById("login-msg");
-
-  if (!loginForm) return;
-
-  loginForm.addEventListener("submit", function (e) {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const username = this.username.value.trim();
-    const password = this.password.value.trim();
+    const username = form.username.value.trim().toLowerCase();
+    const password = form.password.value.trim();
 
-    if (!username || !password) {
-      loginMsg.textContent = "❌ Please enter username and password.";
+    const users = NB.getUsers();
+    const found = users.find(
+      (u) => u.username.toLowerCase() === username && u.password === password
+    );
+
+    if (!found) {
+      errorBox.textContent = "Invalid username or password.";
       return;
     }
 
-    // check against stored users
-    const users = getUsers(); // from core.js
-    const found = users.find((u) => u.username === username);
-
-    if (found) {
-      // set current user properly
-      setCurrentUser(found); // from core.js
-      loginMsg.textContent = "✅ Login successful! Redirecting...";
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 800);
-    } else {
-      loginMsg.textContent = "❌ User not found.";
-    }
+    NB.setCurrentUser(found);
+    window.location.href = "index.html";
   });
 });
