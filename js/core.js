@@ -1,4 +1,4 @@
-/* core.js — shared utilities for Nepali Bazar (improved + seeding + safe loaders) */
+/* core.js — shared utilities + page router for Nepali Bazar */
 "use strict";
 
 // ------------------ CONFIG ------------------
@@ -30,20 +30,20 @@ function saveToStorage(key, value) {
 // ------------------ PRODUCTS ------------------
 function getProducts() { return loadFromStorage(STORAGE_KEY, []); }
 function saveProducts(products) { saveToStorage(STORAGE_KEY, products); }
-// Add product and return it
 function addProduct(product) {
   const products = getProducts();
   const prod = Object.assign({}, product);
   prod.id = String(prod.id || (Date.now() + Math.floor(Math.random() * 1000)));
   prod.createdAt = prod.createdAt || Date.now();
-  // main image compatibility
-  if (!prod.image) prod.image = (Array.isArray(prod.images) && prod.images[0]) ? prod.images[0] : prod.image || "assets/images/placeholder.jpg";
+  if (!prod.image)
+    prod.image = (Array.isArray(prod.images) && prod.images[0])
+      ? prod.images[0]
+      : "assets/images/placeholder.jpg";
   products.unshift(prod);
   saveProducts(products);
   return prod;
 }
-// alias used by older code
-function saveProduct(product) { return addProduct(product); }
+function saveProduct(product) { return addProduct(product); } // alias for compatibility
 
 // ------------------ USERS ------------------
 function getUsers() { return loadFromStorage(USERS_KEY, []); }
@@ -145,15 +145,14 @@ function initCore() {
   console.info("Core initialized ✅");
   try { seedIfEmpty(); } catch (e) { console.warn("seed failed", e); }
 
-  // wire logout
   const logoutBtn = safeGetEl("logout-btn");
   if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
 
-  // header user toggle
   const current = getCurrentUser();
   const loginLink = safeGetEl("login-link");
   const userDropdown = safeGetEl("user-dropdown");
   const usernameDisplay = safeGetEl("username-display");
+
   if (current && current.username) {
     if (loginLink) loginLink.style.display = "none";
     if (userDropdown) {
@@ -166,7 +165,6 @@ function initCore() {
     if (userDropdown) userDropdown.style.display = "none";
   }
 
-  // dropdown toggle
   const userBtn = safeGetEl("user-btn");
   const dropdownMenu = safeGetEl("dropdown-menu");
   if (userBtn && dropdownMenu) {
@@ -178,3 +176,31 @@ function initCore() {
     });
   }
 }
+
+// ------------------ ROUTER ------------------
+document.addEventListener("DOMContentLoaded", () => {
+  initCore();
+
+  const page = document.body.dataset.page;
+
+  switch (page) {
+    case "index":
+      if (typeof initIndex === "function") initIndex();
+      break;
+    case "products":
+      if (typeof initProducts === "function") initProducts();
+      break;
+    case "sell":
+      if (typeof initSell === "function") initSell();
+      break;
+    case "profile":
+      if (typeof initProfile === "function") initProfile();
+      break;
+    case "login":
+      if (typeof initLogin === "function") initLogin();
+      break;
+    default:
+      // do nothing
+      break;
+  }
+});
