@@ -1,206 +1,104 @@
-/* core.js — shared utilities + page router for Nepali Bazar */
-"use strict";
+/* ========================================================================
+   core.js – Global utilities, storage, session, router
+   ======================================================================== */
+(function () {
+  "use strict";
 
-// ------------------ CONFIG ------------------
-const STORAGE_KEY = window.LOCAL_STORAGE_KEY || "nb_products_v1";
-const USERS_KEY = window.LOCAL_USERS_KEY || "nb_users_v1";
-const PINNED_KEY = "nb_pinned";
-const CURRENT_USER_KEY = "nb_current_user";
-const STORAGE_VERSION = 1;
+  // ------------------ CONFIG ------------------
+  const USERS_KEY = "nb_users_v1";
+  const CURRENT_USER_KEY = "nb_current_user";
 
-// ------------------ STORAGE HELPERS ------------------
-function loadFromStorage(key, fallback = []) {
-  try {
-    const v = localStorage.getItem(key);
-    if (!v) return fallback;
-    return JSON.parse(v);
-  } catch (e) {
-    console.warn("loadFromStorage parse error for", key, e);
-    return fallback;
-  }
-}
-function saveToStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.warn("saveToStorage error for", key, e);
-  }
-}
+  // ------------------ SEED USERS ------------------
+  const seedUsers = [
+    { username: "sohaum", password: "admin123", role: "admin" },
+    { username: "sneha", password: "sneha123", role: "user" },
+    { username: "demo1", password: "demo1", role: "user" },
+    { username: "demo2", password: "demo2", role: "user" },
+    { username: "demo3", password: "demo3", role: "user" },
+  ];
 
-// ------------------ PRODUCTS ------------------
-function getProducts() { return loadFromStorage(STORAGE_KEY, []); }
-function saveProducts(products) { saveToStorage(STORAGE_KEY, products); }
-function addProduct(product) {
-  const products = getProducts();
-  const prod = Object.assign({}, product);
-  prod.id = String(prod.id || (Date.now() + Math.floor(Math.random() * 1000)));
-  prod.createdAt = prod.createdAt || Date.now();
-  if (!prod.image)
-    prod.image = (Array.isArray(prod.images) && prod.images[0])
-      ? prod.images[0]
-      : "assets/images/placeholder.jpg";
-  products.unshift(prod);
-  saveProducts(products);
-  return prod;
-}
-function saveProduct(product) { return addProduct(product); } // alias for compatibility
-
-// ------------------ USERS ------------------
-function getUsers() { return loadFromStorage(USERS_KEY, []); }
-function saveUsers(users) { saveToStorage(USERS_KEY, users); }
-function getCurrentUser() {
-  try {
-    const raw = localStorage.getItem(CURRENT_USER_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch { return null; }
-}
-function setCurrentUser(user) {
-  if (!user) localStorage.removeItem(CURRENT_USER_KEY);
-  else localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-}
-function logoutUser(e) {
-  if (e && e.preventDefault) e.preventDefault();
-  setCurrentUser(null);
-  window.location.href = "login.html";
-}
-
-// ------------------ PINNED / WISHLIST ------------------
-function getPinned() { return loadFromStorage(PINNED_KEY, []); }
-function savePinned(list) { saveToStorage(PINNED_KEY, list); }
-
-// ------------------ CLEANUP (expired listings) ------------------
-function pruneExpiredProducts() {
-  try {
-    const products = getProducts();
-    const now = Date.now();
-    const filtered = products.filter(p => !p.expiresAt || p.expiresAt > now);
-    if (filtered.length !== products.length) saveProducts(filtered);
-  } catch (e) {
-    console.warn("pruneExpiredProducts failed", e);
-  }
-}
-
-// ------------------ SEED DATA (first-run) ------------------
-function seedIfEmpty() {
-  pruneExpiredProducts();
-
-  const products = getProducts();
-  if (!products || products.length === 0) {
-    const sample = [
-      {
-        id: String(Date.now() + 1),
-        title: "Used Mountain Bike (Good Condition)",
-        description: "Well-maintained mountain bike. 21-speed, disc brakes.",
-        price: 9500,
-        location: "Kathmandu",
-        category: "Sports",
-        image: "assets/images/bike.jpg",
-        images: ["assets/images/bike.jpg"],
-        sellerName: "sneha",
-        contact: "9800000000",
-        ownerId: "sneha",
-        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 7,
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7
-      },
-      {
-        id: String(Date.now() + 2),
-        title: "Smartphone — Brand New (128GB)",
-        description: "Unboxed phone with full warranty. Charger included.",
-        price: 24500,
-        location: "Lalitpur",
-        category: "Electronics",
-        image: "assets/images/phone.jpg",
-        images: ["assets/images/phone.jpg"],
-        sellerName: "sohaum",
-        contact: "9810000000",
-        ownerId: "sohaum",
-        createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3,
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7
-      }
-    ];
-    saveProducts(sample);
-    console.info("Seeded sample products:", sample.length);
-  }
-
-  const users = getUsers();
-  if (!users || users.length === 0) {
-    const demoUsers = [
-      { id: "sohaum", username: "sohaum", role: "admin" },
-      { id: "sneha", username: "sneha", role: "user" },
-      { id: "demo1", username: "demo1", role: "user" },
-      { id: "demo2", username: "demo2", role: "user" }
-    ];
-    saveUsers(demoUsers);
-    console.info("Seeded demo users");
-  }
-}
-
-// ------------------ HELPERS ------------------
-function findProductById(id) { return getProducts().find(p => String(p.id) === String(id)); }
-function safeGetEl(id) { return document.getElementById(id) || null; }
-
-// ------------------ UI / INIT (core) ------------------
-function initCore() {
-  console.info("Core initialized ✅");
-  try { seedIfEmpty(); } catch (e) { console.warn("seed failed", e); }
-
-  const logoutBtn = safeGetEl("logout-btn");
-  if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
-
-  const current = getCurrentUser();
-  const loginLink = safeGetEl("login-link");
-  const userDropdown = safeGetEl("user-dropdown");
-  const usernameDisplay = safeGetEl("username-display");
-
-  if (current && current.username) {
-    if (loginLink) loginLink.style.display = "none";
-    if (userDropdown) {
-      userDropdown.style.display = "flex";
-      userDropdown.setAttribute("aria-hidden", "false");
-      if (usernameDisplay) usernameDisplay.textContent = current.username;
+  function initUsers() {
+    if (!localStorage.getItem(USERS_KEY)) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(seedUsers));
     }
-  } else {
-    if (loginLink) loginLink.style.display = "inline-block";
-    if (userDropdown) userDropdown.style.display = "none";
   }
 
-  const userBtn = safeGetEl("user-btn");
-  const dropdownMenu = safeGetEl("dropdown-menu");
-  if (userBtn && dropdownMenu) {
-    userBtn.addEventListener("click", () => {
-      const expanded = userBtn.getAttribute("aria-expanded") === "true";
-      userBtn.setAttribute("aria-expanded", String(!expanded));
-      dropdownMenu.style.display = expanded ? "none" : "flex";
-      dropdownMenu.setAttribute("aria-hidden", String(expanded));
-    });
+  // ------------------ STORAGE HELPERS ------------------
+  function getUsers() {
+    return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
   }
-}
 
-// ------------------ ROUTER ------------------
-document.addEventListener("DOMContentLoaded", () => {
-  initCore();
-
-  const page = document.body.dataset.page;
-
-  switch (page) {
-    case "index":
-      if (typeof initIndex === "function") initIndex();
-      break;
-    case "products":
-      if (typeof initProducts === "function") initProducts();
-      break;
-    case "sell":
-      if (typeof initSell === "function") initSell();
-      break;
-    case "profile":
-      if (typeof initProfile === "function") initProfile();
-      break;
-    case "login":
-      if (typeof initLogin === "function") initLogin();
-      break;
-    default:
-      // do nothing
-      break;
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || "null");
   }
-});
+
+  function setCurrentUser(user) {
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+  }
+
+  function clearCurrentUser() {
+    localStorage.removeItem(CURRENT_USER_KEY);
+  }
+
+  // ------------------ NAVBAR RENDER ------------------
+  function renderNavbar() {
+    const nav = document.querySelector("nav ul");
+    if (!nav) return;
+
+    const user = getCurrentUser();
+    nav.innerHTML = "";
+
+    // Guest view
+    if (!user) {
+      nav.innerHTML = `
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Browse</a></li>
+        <li><a href="login.html">Login</a></li>
+      `;
+      return;
+    }
+
+    // Common for logged-in users
+    let links = `
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Browse</a></li>
+      <li><a href="sell.html">Sell</a></li>
+      <li><a href="profile.html">Profile</a></li>
+    `;
+
+    // Admin-only link
+    if (user.role === "admin") {
+      links += `<li><a href="admin.html">Admin Panel</a></li>`;
+    }
+
+    // Logout button
+    links += `<li><a href="#" id="logoutBtn">Logout</a></li>`;
+
+    nav.innerHTML = links;
+
+    // Hook logout
+    const logoutBtn = document.querySelector("#logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        clearCurrentUser();
+        window.location.href = "login.html";
+      });
+    }
+  }
+
+  // ------------------ INIT ------------------
+  window.NB = {
+    initUsers,
+    getUsers,
+    getCurrentUser,
+    setCurrentUser,
+    clearCurrentUser,
+    renderNavbar,
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    initUsers();
+    renderNavbar();
+  });
+})();
