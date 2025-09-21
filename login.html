@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body class="dark-bg" data-page="login">
+  
   <!-- Background Grid -->
   <div class="bg-grid"></div>
 
@@ -28,18 +29,9 @@
         </div>
       </a>
 
+      <!-- Navbar (dynamic via core.js) -->
       <nav class="nav">
-        <a href="index.html" class="nav-link">Home</a>
-        <a href="products.html" class="nav-link">Products</a>
-        <a href="sell.html" class="nav-link cta">Sell</a>
-        <!-- login link -->
-        <a href="login.html" id="login-link" class="nav-link">Login</a>
-        <!-- user dropdown/info -->
-        <span id="user-dropdown" class="nav-link" style="display:none;">
-          Hi, <span id="username-display"></span> |
-          <a href="#" id="logout-btn" class="nav-link">Logout</a> |
-          <a href="profile.html" class="nav-link">Profile</a>
-        </span>
+        <ul class="nav-list"></ul>
       </nav>
     </div>
   </header>
@@ -48,7 +40,7 @@
   <main class="container auth-wrap">
     <div class="auth-card">
       <h2>Login</h2>
-      <form id="login-form" class="form-grid">
+      <form id="loginForm" class="form-grid">
         <label>Username
           <input name="username" placeholder="Username" class="input" required />
         </label>
@@ -58,7 +50,7 @@
         <div class="form-actions">
           <button class="btn btn-primary" type="submit">Sign in</button>
         </div>
-        <p id="login-msg" class="muted small"></p>
+        <p id="errorBox" class="muted small"></p>
       </form>
     </div>
   </main>
