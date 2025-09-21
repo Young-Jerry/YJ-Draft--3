@@ -14,8 +14,10 @@
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body class="dark-bg" data-page="login">
+  <!-- Background Grid -->
+  <div class="bg-grid"></div>
+
   <!-- Header -->
-<div class="bg-grid"></div>
   <header class="site-header">
     <div class="container header-inner">
       <a href="index.html" class="brand">
@@ -73,5 +75,12 @@
   <script src="js/core.js"></script>
   <script src="js/login.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    // Auto year update
+    document.addEventListener("DOMContentLoaded", () => {
+      const yearEl = document.getElementById("year");
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+  </script>
 </body>
 </html>
