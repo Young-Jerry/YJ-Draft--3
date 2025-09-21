@@ -84,3 +84,25 @@ body[data-page="login"] {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Make sure header and footer inherit index styles */
+body[data-page="login"] .site-header,
+body[data-page="login"] .site-footer {
+  background: rgba(15, 15, 25, 0.95); /* dark neon background */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 150, 0.25);
+}
+
+/* Keep header sticky like index */
+body[data-page="login"] .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Footer text centered */
+body[data-page="login"] .site-footer {
+  text-align: center;
+  padding: 1rem 0;
+}
